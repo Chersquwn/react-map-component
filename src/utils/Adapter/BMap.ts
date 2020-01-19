@@ -11,12 +11,23 @@ export interface BMarkerOptions {
 }
 
 export interface BPolylineOptions {
-  path: any[]
+  path: Coords[]
   borderWeight: number
   strokeColor: string
   strokeOpacity: number
   strokeWeight: number
   strokeStyle: 'solid' | 'dashed'
+}
+
+export interface BPolygonOptions {
+  path: Coords[]
+  fillColor: string
+  borderWeight?: number
+  strokeColor?: string
+  strokeOpacity?: number
+  strokeWeight: number
+  fillOpacity?: number
+  strokeStyle?: 'solid' | 'dashed'
 }
 
 export class BMap {
@@ -67,8 +78,21 @@ export class BPolyline {
   }
 }
 
+export class BPolygon {
+  public constructor(options: BPolygonOptions) {
+    const { path, ...opts } = options
+    const BMap = window.BMap
+    const paths = path.map(position => {
+      return new BMap.Point(position[0], position[1])
+    })
+
+    return new BMap.Polygon(paths, opts)
+  }
+}
+
 export default {
   Map: BMap,
   Marker: BMarker,
-  Polyline: BPolyline
+  Polyline: BPolyline,
+  Polygon: BPolygon
 }
