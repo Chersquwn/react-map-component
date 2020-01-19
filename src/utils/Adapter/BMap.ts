@@ -1,13 +1,22 @@
-type BMapPosition = [number, number]
+import { Coords } from '../../components/Map'
 
 export interface BMapOptions {
-  center: BMapPosition
+  center: Coords
   zoom: number
 }
 
 export interface BMarkerOptions {
   icon?: string
-  position: BMapPosition
+  position: Coords
+}
+
+export interface BPolylineOptions {
+  path: any[]
+  borderWeight: number
+  strokeColor: string
+  strokeOpacity: number
+  strokeWeight: number
+  strokeStyle: 'solid' | 'dashed'
 }
 
 export class BMap {
@@ -37,7 +46,7 @@ export class BMarker {
       position
     } = options
     const BMap = window.BMap
-    const markerIcon = new BMap.Icon(icon, new BMap.Size(23, 25), {
+    const markerIcon = new BMap.Icon(icon, new BMap.Size(24, 25), {
       anchor: new BMap.Size(10, 25)
     })
     const point = new BMap.Point(position[0], position[1])
@@ -46,7 +55,20 @@ export class BMarker {
   }
 }
 
+export class BPolyline {
+  public constructor(options: BPolylineOptions) {
+    const { path, ...opts } = options
+    const BMap = window.BMap
+    const paths = path.map(position => {
+      return new BMap.Point(position[0], position[1])
+    })
+
+    return new BMap.Polyline(paths, opts)
+  }
+}
+
 export default {
   Map: BMap,
-  Marker: BMarker
+  Marker: BMarker,
+  Polyline: BPolyline
 }
