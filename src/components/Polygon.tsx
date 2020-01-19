@@ -1,4 +1,4 @@
-import { FC, useEffect, useContext } from 'react'
+import { FC, useEffect, useContext, useRef } from 'react'
 import { Coords } from './Map'
 import { MapContext } from './MapContext'
 
@@ -25,11 +25,13 @@ const Polygon: FC<PolygonProps> = props => {
     strokeStyle = 'solid'
   } = props
   const { map, MapAdapter } = useContext(MapContext)
+  const polygonRef = useRef(null)
 
   useEffect(() => {
     if (!map || !MapAdapter) return
+    if (polygonRef.current) map.remove([polygonRef.current])
 
-    const polygon = new MapAdapter.Polygon({
+    polygonRef.current = new MapAdapter.Polygon({
       path,
       fillColor,
       borderWeight,
@@ -40,7 +42,7 @@ const Polygon: FC<PolygonProps> = props => {
       strokeStyle
     })
 
-    map.add([polygon])
+    map.add([polygonRef.current])
   }, [
     MapAdapter,
     borderWeight,

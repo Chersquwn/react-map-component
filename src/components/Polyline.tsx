@@ -1,4 +1,4 @@
-import { FC, useEffect, useContext } from 'react'
+import { FC, useEffect, useContext, useRef } from 'react'
 import { Coords } from './Map'
 import { MapContext } from './MapContext'
 
@@ -20,11 +20,13 @@ const Polyline: FC<PolylineProps> = props => {
     strokeStyle = 'solid'
   } = props
   const { MapAdapter, map } = useContext(MapContext)
+  const polylineRef = useRef(null)
 
   useEffect(() => {
     if (!map || !MapAdapter) return
+    if (polylineRef.current) map.remove([polylineRef.current])
 
-    const polyline = new MapAdapter.Polyline({
+    polylineRef.current = new MapAdapter.Polyline({
       path,
       borderWeight,
       strokeColor,
@@ -32,7 +34,7 @@ const Polyline: FC<PolylineProps> = props => {
       strokeStyle
     })
 
-    map.add([polyline])
+    map.add([polylineRef.current])
   }, [
     MapAdapter,
     borderWeight,

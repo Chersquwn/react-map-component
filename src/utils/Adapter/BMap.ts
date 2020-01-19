@@ -30,6 +30,17 @@ export interface BPolygonOptions {
   strokeStyle?: 'solid' | 'dashed'
 }
 
+export interface BCircleOptions {
+  center: Coords
+  radius: number
+  strokeColor: string
+  strokeOpacity: number
+  strokeWeight: number
+  fillColor: string
+  fillOpacity: number
+  strokeStyle: 'solid' | 'dashed'
+}
+
 export class BMap {
   public options: BMapOptions
   private _map: any
@@ -45,12 +56,24 @@ export class BMap {
 
   public add(overlays: any[]) {
     overlays.forEach(overlay => {
-      this._map.addOverlay(overlay)
+      const overlayInstance = overlay.getInstance()
+      this._map.addOverlay(overlayInstance)
+    })
+  }
+
+  public remove(overlays: any[]) {
+    overlays.forEach(overlay => {
+      if (!overlay) return
+
+      const overlayInstance = overlay.getInstance()
+      this._map.removeOverlay(overlayInstance)
     })
   }
 }
 
 export class BMarker {
+  private _instance: any = null
+
   public constructor(options: BMarkerOptions) {
     const {
       icon = 'http://api0.map.bdimg.com/images/marker_red_sprite.png',
@@ -62,11 +85,17 @@ export class BMarker {
     })
     const point = new BMap.Point(position[0], position[1])
 
-    return new BMap.Marker(point, { icon: markerIcon })
+    this._instance = new BMap.Marker(point, { icon: markerIcon })
+  }
+
+  public getInstance() {
+    return this._instance
   }
 }
 
 export class BPolyline {
+  private _instance: any = null
+
   public constructor(options: BPolylineOptions) {
     const { path, ...opts } = options
     const BMap = window.BMap
@@ -74,11 +103,17 @@ export class BPolyline {
       return new BMap.Point(position[0], position[1])
     })
 
-    return new BMap.Polyline(paths, opts)
+    this._instance = new BMap.Polyline(paths, opts)
+  }
+
+  public getInstance() {
+    return this._instance
   }
 }
 
 export class BPolygon {
+  private _instance: any = null
+
   public constructor(options: BPolygonOptions) {
     const { path, ...opts } = options
     const BMap = window.BMap
@@ -86,7 +121,27 @@ export class BPolygon {
       return new BMap.Point(position[0], position[1])
     })
 
-    return new BMap.Polygon(paths, opts)
+    this._instance = new BMap.Polygon(paths, opts)
+  }
+
+  public getInstance() {
+    return this._instance
+  }
+}
+
+export class BCircle {
+  private _instance: any = null
+
+  public constructor(options: BCircleOptions) {
+    const { center, radius, ...opts } = options
+    const BMap = window.BMap
+    const point = new BMap.Point(center[0], center[1])
+
+    this._instance = new BMap.Circle(point, radius, opts)
+  }
+
+  public getInstance() {
+    return this._instance
   }
 }
 
@@ -94,5 +149,6 @@ export default {
   Map: BMap,
   Marker: BMarker,
   Polyline: BPolyline,
-  Polygon: BPolygon
+  Polygon: BPolygon,
+  Circle: BCircle
 }
