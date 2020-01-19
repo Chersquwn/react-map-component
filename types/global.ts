@@ -1,10 +1,14 @@
 interface AMapType {
   Map: any
+  Marker: any
 }
 
 interface BMapType {
   Map: any
   Point: any
+  Icon: any
+  Size: any
+  Marker: any
 }
 
 declare global {
@@ -15,7 +19,3 @@ declare global {
 }
 
 export {}
-
-// window.AMap = { Map: {} }
-// window.BMap = { Map: {} }
-// window.MapAdpater = { Map: {} }

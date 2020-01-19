@@ -1,8 +1,9 @@
-import React, { FC, useRef, PropsWithChildren } from 'react'
+import React, { FC, useRef, PropsWithChildren, useState } from 'react'
 import APILoader from '../utils/APILoader'
 import { useAsyncEffect } from '../hooks/useAsyncEffect'
 import '../../types/global'
-import { Adpater } from '../utils/Adpater'
+import { Adpater } from '../utils/Adapter'
+import { MapContext } from './MapContext'
 
 export type MapType = 'AMap' | 'BMap'
 
@@ -24,9 +25,12 @@ const ReactMap: FC<ReactMapProps> = props => {
     version,
     center,
     width = '100vw',
-    height = '50vh'
+    height = '50vh',
+    children
   } = props
   const mapRef = useRef(null)
+  const [map, setMap] = useState(null)
+  const [MapAdapter, setMapAdapter] = useState(null)
 
   useAsyncEffect(async () => {
     await new APILoader({
@@ -35,23 +39,30 @@ const ReactMap: FC<ReactMapProps> = props => {
       version
     }).load()
 
-    const Map = Adpater(appName).Map
+    const MapAdapter = Adpater(appName)
+    const Map = MapAdapter.Map
 
     // eslint-disable-next-line no-new
-    new Map(mapRef.current, {
+    const map = new Map(mapRef.current, {
       zoom: 11,
       center
     })
+
+    setMap(map)
+    setMapAdapter(MapAdapter)
   }, [])
 
   return (
-    <div className="react-map" style={{ width, height }}>
-      <div
-        ref={mapRef}
-        className="map-conatiner"
-        style={{ width: '100%', height: '100%' }}
-      />
-    </div>
+    <MapContext.Provider value={{ map, MapAdapter }}>
+      <div className="react-map" style={{ width, height }}>
+        <div
+          ref={mapRef}
+          className="map-conatiner"
+          style={{ width: '100%', height: '100%' }}
+        />
+        {children}
+      </div>
+    </MapContext.Provider>
   )
 }
 

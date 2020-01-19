@@ -13,7 +13,7 @@ const getMapAdpater = (type: MapType) => {
 }
 
 export const Adpater = (type: MapType) => {
-  return {
-    Map: getMapAdpater(type)
-  }
+  return getMapAdpater(type)
 }
+
+export type AdpaterType = ReturnType<typeof Adpater>
