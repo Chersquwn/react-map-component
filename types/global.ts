@@ -3,6 +3,7 @@ interface AMapType {
   Marker: any
   Polyline: any
   Polygon: any
+  Circle: any
 }
 
 interface BMapType {
@@ -13,6 +14,7 @@ interface BMapType {
   Marker: any
   Polyline: any
   Polygon: any
+  Circle: any
 }
 
 declare global {
