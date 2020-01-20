@@ -4,6 +4,8 @@ interface AMapType {
   Polyline: any
   Polygon: any
   Circle: any
+  LngLat: any
+  convertFrom: (...args: any) => void
 }
 
 interface BMapType {
@@ -15,6 +17,8 @@ interface BMapType {
   Polyline: any
   Polygon: any
   Circle: any
+  Convertor: any
+  LngLat: any
 }
 
 declare global {

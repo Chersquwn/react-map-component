@@ -4,6 +4,7 @@ import { useAsyncEffect } from '../hooks/useAsyncEffect'
 import '../../types/global'
 import { Adpater } from '../utils/Adapter'
 import { MapContext } from './MapContext'
+import { convert } from '../utils/convert'
 
 export type MapType = 'AMap' | 'BMap'
 
@@ -41,15 +42,21 @@ const ReactMap: FC<ReactMapProps> = props => {
 
     const MapAdapter = Adpater(appName)
     const Map = MapAdapter.Map
+    const position = new MapAdapter.LngLat(center[0], center[1])
 
-    // eslint-disable-next-line no-new
-    const map = new Map(mapRef.current, {
-      zoom: 11,
-      center
+    convert([position], 'gps', data => {
+      if (data.status === 0) {
+        console.log(data.locations)
+        // eslint-disable-next-line no-new
+        const map = new Map(mapRef.current, {
+          zoom: 11,
+          center: data.locations[0]
+        })
+
+        setMap(map)
+        setMapAdapter(MapAdapter)
+      }
     })
-
-    setMap(map)
-    setMapAdapter(MapAdapter)
   }, [])
 
   return (

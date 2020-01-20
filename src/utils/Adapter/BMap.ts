@@ -49,9 +49,7 @@ export class BMap {
     const { center, zoom } = options
 
     this._map = new window.BMap.Map(el)
-    const point = new window.BMap.Point(center[0], center[1])
-
-    this._map.centerAndZoom(point, zoom)
+    this._map.centerAndZoom(center, zoom)
   }
 
   public add(overlays: any[]) {
@@ -68,6 +66,14 @@ export class BMap {
       const overlayInstance = overlay.getInstance()
       this._map.removeOverlay(overlayInstance)
     })
+  }
+}
+
+export class BLngLat {
+  public constructor(lng: number, lat: number) {
+    const BMap = window.BMap
+
+    return new BMap.Point(lng, lat)
   }
 }
 
@@ -150,5 +156,6 @@ export default {
   Marker: BMarker,
   Polyline: BPolyline,
   Polygon: BPolygon,
-  Circle: BCircle
+  Circle: BCircle,
+  LngLat: BLngLat
 }
