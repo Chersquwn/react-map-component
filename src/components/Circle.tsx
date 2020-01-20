@@ -1,6 +1,7 @@
 import { FC, useContext, useEffect, useRef } from 'react'
 import { Coords } from './Map'
 import { MapContext } from './MapContext'
+import { convert } from '../utils/convert'
 
 export interface CircleProps {
   center: Coords
@@ -31,18 +32,24 @@ const Circle: FC<CircleProps> = props => {
     if (!map || !MapAdapter) return
     if (circleRef.current) map.remove([circleRef.current])
 
-    circleRef.current = new MapAdapter.Circle({
-      center,
-      radius,
-      fillColor,
-      strokeColor,
-      strokeOpacity,
-      strokeWeight,
-      fillOpacity,
-      strokeStyle
-    })
+    const position = new MapAdapter.LngLat(center[0], center[1])
 
-    map.add([circleRef.current])
+    convert([position], 'gps', data => {
+      if (data.status === 0) {
+        circleRef.current = new MapAdapter.Circle({
+          center: data.locations[0],
+          radius,
+          fillColor,
+          strokeColor,
+          strokeOpacity,
+          strokeWeight,
+          fillOpacity,
+          strokeStyle
+        })
+
+        map.add([circleRef.current])
+      }
+    })
   }, [
     map,
     MapAdapter,

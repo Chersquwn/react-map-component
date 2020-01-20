@@ -46,7 +46,6 @@ const ReactMap: FC<ReactMapProps> = props => {
 
     convert([position], 'gps', data => {
       if (data.status === 0) {
-        console.log(data.locations)
         // eslint-disable-next-line no-new
         const map = new Map(mapRef.current, {
           zoom: 11,

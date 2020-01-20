@@ -1,6 +1,7 @@
 import { FC, useEffect, useContext, useRef } from 'react'
 import { Coords } from './Map'
 import { MapContext } from './MapContext'
+import { convert } from '../utils/convert'
 
 export interface PolygonProps {
   path: Coords[]
@@ -31,18 +32,24 @@ const Polygon: FC<PolygonProps> = props => {
     if (!map || !MapAdapter) return
     if (polygonRef.current) map.remove([polygonRef.current])
 
-    polygonRef.current = new MapAdapter.Polygon({
-      path,
-      fillColor,
-      borderWeight,
-      strokeColor,
-      strokeOpacity,
-      strokeWeight,
-      fillOpacity,
-      strokeStyle
-    })
+    const paths = path.map(p => new MapAdapter.LngLat(p[0], p[1]))
 
-    map.add([polygonRef.current])
+    convert(paths, 'gps', data => {
+      if (data.status === 0) {
+        polygonRef.current = new MapAdapter.Polygon({
+          path: data.locations,
+          fillColor,
+          borderWeight,
+          strokeColor,
+          strokeOpacity,
+          strokeWeight,
+          fillOpacity,
+          strokeStyle
+        })
+
+        map.add([polygonRef.current])
+      }
+    })
   }, [
     MapAdapter,
     borderWeight,

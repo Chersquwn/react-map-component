@@ -105,11 +105,8 @@ export class BPolyline {
   public constructor(options: BPolylineOptions) {
     const { path, ...opts } = options
     const BMap = window.BMap
-    const paths = path.map(position => {
-      return new BMap.Point(position[0], position[1])
-    })
 
-    this._instance = new BMap.Polyline(paths, opts)
+    this._instance = new BMap.Polyline(path, opts)
   }
 
   public getInstance() {
@@ -123,11 +120,8 @@ export class BPolygon {
   public constructor(options: BPolygonOptions) {
     const { path, ...opts } = options
     const BMap = window.BMap
-    const paths = path.map(position => {
-      return new BMap.Point(position[0], position[1])
-    })
 
-    this._instance = new BMap.Polygon(paths, opts)
+    this._instance = new BMap.Polygon(path, opts)
   }
 
   public getInstance() {
@@ -141,9 +135,8 @@ export class BCircle {
   public constructor(options: BCircleOptions) {
     const { center, radius, ...opts } = options
     const BMap = window.BMap
-    const point = new BMap.Point(center[0], center[1])
 
-    this._instance = new BMap.Circle(point, radius, opts)
+    this._instance = new BMap.Circle(center, radius, opts)
   }
 
   public getInstance() {

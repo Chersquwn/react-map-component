@@ -1,6 +1,7 @@
 import { FC, useEffect, useContext, useRef } from 'react'
 import { Coords } from './Map'
 import { MapContext } from './MapContext'
+import { convert } from '../utils/convert'
 
 export interface PolylineProps {
   path: Coords[]
@@ -26,15 +27,21 @@ const Polyline: FC<PolylineProps> = props => {
     if (!map || !MapAdapter) return
     if (polylineRef.current) map.remove([polylineRef.current])
 
-    polylineRef.current = new MapAdapter.Polyline({
-      path,
-      borderWeight,
-      strokeColor,
-      strokeOpacity,
-      strokeStyle
-    })
+    const paths = path.map(p => new MapAdapter.LngLat(p[0], p[1]))
 
-    map.add([polylineRef.current])
+    convert(paths, 'gps', data => {
+      if (data.status === 0) {
+        polylineRef.current = new MapAdapter.Polyline({
+          path: data.locations,
+          borderWeight,
+          strokeColor,
+          strokeOpacity,
+          strokeStyle
+        })
+
+        map.add([polylineRef.current])
+      }
+    })
   }, [
     MapAdapter,
     borderWeight,
